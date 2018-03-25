@@ -1,0 +1,127 @@
+# はじめに
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = " ##"
+  )
+set.seed(123)
+```
+
+```{r}
+library(mlr)
+```
+
+
+細かいところは飛ばしていきます。
+
+## 必要なライブラリとツール
+
+- **mlr**
+    - Rで機械学習と言えばこれという説がある。
+    - チュートリアルを訳したもの: [mlrパッケージチュートリアル - Quick Walkthrough編](https://nozma.github.io/mlr_tutorial/)
+- **ggplot2**
+    - プロット用パッケージ。
+- **GGally**
+    - ggplot2を使って散布図行列等が簡単に作成できるパッケージ。
+
+## 最初のアプリケーション: アイリスのクラス分類
+
+- **みんな大好きiris**
+- Rでは最初からirisを使える。
+
+```{r}
+head(iris)
+```
+
+- **iris**をヘルプに渡せばデータの解説も得られる。
+- `?iris`でも良い。
+
+```r
+help(iris)
+```
+
+```{r echo=FALSE}
+page <- utils:::.getHelpFile(?iris)
+tools::Rd2txt(page)
+```
+
+### 最初にすべきこと: データをよく観察する
+
+訓練セットとテストセットに分割してからプロットする必要も無いと思うので、先に散布図行列を作成する。ここでは**ggplot2**を使って散布図行列を作成する**GGally**パッケージを使用した。
+
+```{r}
+GGally::ggpairs(
+  iris, ggplot2::aes(color = Species),
+  upper = list(continuous = GGally::wrap("cor", size = 2.5)),
+  lower = list(combo = GGally::wrap("facethist", bins = 20))
+)
+```
+
+
+### 成功度合いの測定: 訓練データとテストデータ
+
+- 雑な感じで3:1にデータを分割する。
+
+```{r}
+n <- nrow(iris)
+iris_train <- sample(n, size = 3/4 * n)
+iris_test <- setdiff(1:n, iris_train)
+```
+
+### 最初のモデル: $k$-最近傍法
+
+- sklearnよろしく、まず学習器のインスタンスを生成する。
+- $k$=1のkNNからということなので、そのようにする。
+
+```{r}
+lrn <- makeLearner(
+  "classif.knn", k = 1
+)
+lrn
+```
+
+学習器を作成したらデータをフィットさせて訓練する。
+
+```{r}
+## まずタスクを作成する必要がある
+iris_task <- makeClassifTask(data = iris, target = "Species")
+## 訓練する
+mod <- train(lrn, iris_task, subset = iris_train)
+mod
+```
+
+### 予測を行う
+
+予測は`predict`で行う。
+
+```{r}
+predict(mod, newdata = data.frame(5, 2.9, 1, 0.2))
+```
+
+setosaと予測されたがこれが正しい分類かどうかわからない…。この時のためにテストデータをとっておいたのだった。
+
+### モデルの評価
+
+- テストデータを使った予測結果とテストデータの真のクラスラベルを比較する。
+- テストデータのうち正しく分類できたものの割合を**精度**と呼ぶ。
+
+mlrでは`predict`にタスクとsubsetを指定すると、subsetに対して指定したインデックスで予測を行い、予測されたクラスラベルと正解のクラスラベルを合わせて返してくれる。
+
+```{r}
+pred <- predict(mod, task = iris_task, subset = iris_test)
+pred
+```
+
+従って、精度を求めるにはtruthとresponseの値の一致率を見ればよい。
+
+```{r}
+mean(pred$data$truth == pred$data$response)
+```
+
+無論、性能指標を計算するための関数も用意されている。予測結果を`performance`に渡せば良い。
+
+```{r}
+performance(pred, measures = list(mmce, acc)) # 計算する指標を指定している
+```
+

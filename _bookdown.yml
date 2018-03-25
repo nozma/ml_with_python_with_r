@@ -1,0 +1,6 @@
+output_dir: docs
+new_session: yes
+edit: https://github.com/nozma/ml_with_python_with_r/edit/master/%s
+rmd_files:
+  - index.Rmd
+  - 01_intro.Rmd
