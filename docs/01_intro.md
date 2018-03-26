@@ -5,9 +5,7 @@
 
 ```r
 library(mlr)
- ##  要求されたパッケージ ParamHelpers をロード中です
- ## Warning: replacing previous import 'BBmisc::isFALSE' by
- ## 'backports::isFALSE' when loading 'mlr'
+ ## Loading required package: ParamHelpers
 ```
 
 
@@ -22,6 +20,8 @@ library(mlr)
     - プロット用パッケージ。
 - **GGally**
     - ggplot2を使って散布図行列等が簡単に作成できるパッケージ。
+- **reticulate**
+    - RからPython使うやつ。
 
 ## 最初のアプリケーション: アイリスのクラス分類
 
@@ -205,7 +205,7 @@ pred
  ## 13 13 setosa   setosa
  ## 19 19 setosa   setosa
  ## 21 21 setosa   setosa
- ## ... (38 rows, 3 cols)
+ ## ... (#rows: 38, #cols: 3)
 ```
 
 従って、精度を求めるにはtruthとresponseの値の一致率を見ればよい。

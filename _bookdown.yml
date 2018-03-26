@@ -4,3 +4,4 @@ edit: https://github.com/nozma/ml_with_python_with_r/edit/master/%s
 rmd_files:
   - index.Rmd
   - 01_intro.Rmd
+  - 02_supervised_learning_01.Rmd
