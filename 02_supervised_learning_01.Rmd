@@ -1,0 +1,117 @@
+# 教師あり学習 (1)
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = " ##"
+  )
+set.seed(123)
+```
+
+長くなりそうなので分割。おそらく決定木あたりまで。
+
+```{r}
+library(mlr)
+library(reticulate) # pythonモジュールからデータだけいただく用
+use_python("/usr/bin/python3")
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+theme_set(theme_bw(base_family = "IPAexGothic")) # ggplot2の日本語プロット用
+library(mlbench)
+library(mlrCPO)
+```
+
+## 教師あり機械学習アルゴリズム
+
+### サンプルデータセット
+
+#### 人工的なデータセット
+
+書籍の方では**mgleran**モジュールを使ってデータを生成しているので、**reticulate**をデータだけ取得する。
+
+まずは2クラス分類向けの**forge**を取得し、プロットする。
+
+```{r}
+mglearn <- import("mglearn")
+forge <- mglearn$datasets$make_forge()
+forge %<>% as.data.frame()
+names(forge)[3] <- "y"
+ggplot(forge, aes(x = X1, y = X2, color = factor(y))) + 
+  scale_color_discrete(name = "クラス") +
+  labs(x = "第1特徴量", y = "第2特徴量") +
+  geom_point()
+```
+
+次に回帰向けのデータセット**wave**を取得し、プロットする。
+
+```{r}
+wave <- mglearn$datasets$make_wave(n_samples = 40L)
+wave %<>% as.data.frame()
+names(wave) <- c("X", "y")
+ggplot(wave, aes(X, y)) +
+  geom_point() +
+  labs(x = "特徴量", y = "出力")
+```
+
+#### 実世界のデータセット
+
+**breast cancer**も**boston housing**も**mlbench**パッケージに含まれているが、**breast cancer**の方は**sklearn**に入っているものと若干異なる。**breast cancer**にはOriginalとDiagnosticの2種類あるらしい。**sklearn**に入っているのはDiagnosticで、**mlbench**のやつはOriginal。
+
+- [UCI Machine Learning Repository: Breast Cancer Wisconsin (Original) Data Set](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(original))
+- [UCI Machine Learning Repository: Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic))
+
+Diagnosticの方は少し探したけどRの中には見つからなかったので(代わりにOriginalが`MASS::biopsy`にもあるのを見つけた)、**sklearn**から読み込んで細工しておく。
+
+```{r}
+sklearn <- import("sklearn")
+cancer = sklearn$datasets$load_breast_cancer()
+cancer_data <- as.data.frame(cancer$data)  # データフレーム化
+names(cancer_data) <- cancer$feature_names # 特徴量名取り込み
+cancer_data$Class <- cancer$target_names[cancer$target+1] # クラス取り込み
+```
+- **breast cancer**は569のデータポイントと30の特徴量を持つ。
+
+```{r}
+dim(cancer_data) # クラスも含めているので列数は1多い
+```
+
+各クラスの集計をする。
+
+```{r}
+table(cancer_data$Class)
+```
+
+**boston housing**は**mlbench**パッケージ内のものと**sklearn**のものは同じなので、そのまま使用できる。
+
+```{r}
+data("BostonHousing")
+head(BostonHousing)
+```
+
+次に、特徴量同士の積を重複ありで選択して拡張する、という作業が出て来る。書籍の方ではmglearnの影に隠れてしまっているが、これは`sklearn.preprocessing.PolynomialFeatures`という関数の機能によっている。
+
+これに近いことは、**mlrCPO**パッケージの`cpoModelMatrix`関数を使うと実行できる。**mlrCPO**パッケージはまだCRANには無いので、`devtools::install_github("mlr-org/mlrCPO")`のようにgithubからインストールする必要がある。
+
+```{r}
+boston_task <- makeRegrTask(data = BostonHousing, target = "medv")
+boston_task_ex <- boston_task %>>% cpoModelMatrix(~ 0 + .^2)
+boston_task_ex
+getTaskFeatureNames(boston_task_ex)
+```
+
+しかし作成された特徴量の数は92で、12足りない。特徴量自身の二乗項が入っていないためだ。もともとの特徴量は13あったので、不足分が1つ足らないような気がするが、これは因子型特徴量の`chac`がダミー変数化されて2つの特徴量に分かれているためだ。
+
+特徴量自身の二乗項は、`I()`を使って明示的に含めてやる必要がある。書籍の方に合わせるのであれば、少々面倒だが以下のようにやる。もっと上手いやり方があるかもしれない。
+
+```{r}
+BostonHousing2 <- BostonHousing
+BostonHousing2$chas %<>% as.numeric()
+boston_task2 <- makeRegrTask(data = BostonHousing2, target = "medv")
+fml <- paste0("I(", getTaskFeatureNames(boston_task2), "^2)", collapse = "+")
+fml <- paste0("~0+", fml, "+.^2")
+boston_task_ex2 <- boston_task2 %>>% cpoModelMatrix(as.formula(fml))
+getTaskFeatureNames(boston_task_ex2)
+```
+
+

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Pythonで始める機械学習のRによる学習</title>
+  <meta name="description" content="Pythonで始める機械学習のRによる学習">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Pythonで始める機械学習のRによる学習" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Pythonで始める機械学習のRによる学習" />
+  
+  
+  
+
+<meta name="author" content="R. Ito">
+
+
+<meta name="date" content="2018-03-26">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="2-教師あり学習-1.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #ffffff; color: #1f1c1b; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #ffffff; color: #a0a0a0; border-right: 1px solid #a0a0a0; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #1f1c1b; background-color: #ffffff; }
+code > span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code > span.dt { color: #0057ae; } /* DataType */
+code > span.dv { color: #b08000; } /* DecVal */
+code > span.bn { color: #b08000; } /* BaseN */
+code > span.fl { color: #b08000; } /* Float */
+code > span.cn { color: #aa5500; } /* Constant */
+code > span.ch { color: #924c9d; } /* Char */
+code > span.sc { color: #3daee9; } /* SpecialChar */
+code > span.st { color: #bf0303; } /* String */
+code > span.vs { color: #bf0303; } /* VerbatimString */
+code > span.ss { color: #ff5500; } /* SpecialString */
+code > span.im { color: #ff5500; } /* Import */
+code > span.co { color: #898887; } /* Comment */
+code > span.do { color: #607880; } /* Documentation */
+code > span.an { color: #ca60ca; } /* Annotation */
+code > span.cv { color: #0095ff; } /* CommentVar */
+code > span.ot { color: #006e28; } /* Other */
+code > span.fu { color: #644a9b; } /* Function */
+code > span.va { color: #0057ae; } /* Variable */
+code > span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #1f1c1b; } /* Operator */
+code > span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code > span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code > span.pp { color: #006e28; } /* Preprocessor */
+code > span.at { color: #0057ae; } /* Attribute */
+code > span.re { color: #0057ae; } /* RegionMarker */
+code > span.in { color: #b08000; } /* Information */
+code > span.wa { color: #bf0303; } /* Warning */
+code > span.al { color: #bf0303; font-weight: bold; } /* Alert */
+code > span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code > span. { color: #1f1c1b; } /* Normal */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>まえおき</a><ul>
+<li class="chapter" data-level="" data-path="hoshin.html"><a href="hoshin.html"><i class="fa fa-check"></i>方針とか</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="1-はじめに.html"><a href="1-はじめに.html"><i class="fa fa-check"></i><b>1</b> はじめに</a><ul>
+<li class="chapter" data-level="1.1" data-path="1-1-必要なライブラリとツール.html"><a href="1-1-必要なライブラリとツール.html"><i class="fa fa-check"></i><b>1.1</b> 必要なライブラリとツール</a></li>
+<li class="chapter" data-level="1.2" data-path="1-2-最初のアプリケーション-アイリスのクラス分類.html"><a href="1-2-最初のアプリケーション-アイリスのクラス分類.html"><i class="fa fa-check"></i><b>1.2</b> 最初のアプリケーション: アイリスのクラス分類</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="1-2-最初のアプリケーション-アイリスのクラス分類.html"><a href="1-2-最初のアプリケーション-アイリスのクラス分類.html#最初にすべきこと-データをよく観察する"><i class="fa fa-check"></i><b>1.2.1</b> 最初にすべきこと: データをよく観察する</a></li>
+<li class="chapter" data-level="1.2.2" data-path="1-2-最初のアプリケーション-アイリスのクラス分類.html"><a href="1-2-最初のアプリケーション-アイリスのクラス分類.html#成功度合いの測定-訓練データとテストデータ"><i class="fa fa-check"></i><b>1.2.2</b> 成功度合いの測定: 訓練データとテストデータ</a></li>
+<li class="chapter" data-level="1.2.3" data-path="1-2-最初のアプリケーション-アイリスのクラス分類.html"><a href="1-2-最初のアプリケーション-アイリスのクラス分類.html#最初のモデル-k-最近傍法"><i class="fa fa-check"></i><b>1.2.3</b> 最初のモデル: <span class="math inline">\(k\)</span>-最近傍法</a></li>
+<li class="chapter" data-level="1.2.4" data-path="1-2-最初のアプリケーション-アイリスのクラス分類.html"><a href="1-2-最初のアプリケーション-アイリスのクラス分類.html#予測を行う"><i class="fa fa-check"></i><b>1.2.4</b> 予測を行う</a></li>
+<li class="chapter" data-level="1.2.5" data-path="1-2-最初のアプリケーション-アイリスのクラス分類.html"><a href="1-2-最初のアプリケーション-アイリスのクラス分類.html#モデルの評価"><i class="fa fa-check"></i><b>1.2.5</b> モデルの評価</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-教師あり学習-1.html"><a href="2-教師あり学習-1.html"><i class="fa fa-check"></i><b>2</b> 教師あり学習 (1)</a><ul>
+<li class="chapter" data-level="2.1" data-path="2-1-教師あり機械学習アルゴリズム.html"><a href="2-1-教師あり機械学習アルゴリズム.html"><i class="fa fa-check"></i><b>2.1</b> 教師あり機械学習アルゴリズム</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="2-1-教師あり機械学習アルゴリズム.html"><a href="2-1-教師あり機械学習アルゴリズム.html#サンプルデータセット"><i class="fa fa-check"></i><b>2.1.1</b> サンプルデータセット</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown">
+Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Pythonで始める機械学習のRによる学習</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="教師あり機械学習アルゴリズム" class="section level2">
+<h2><span class="header-section-number">2.1</span> 教師あり機械学習アルゴリズム</h2>
+<div id="サンプルデータセット" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> サンプルデータセット</h3>
+<div id="人工的なデータセット" class="section level4">
+<h4><span class="header-section-number">2.1.1.1</span> 人工的なデータセット</h4>
+<p>書籍の方では<strong>mgleran</strong>モジュールを使ってデータを生成しているので、<strong>reticulate</strong>をデータだけ取得する。</p>
+<p>まずは2クラス分類向けの<strong>forge</strong>を取得し、プロットする。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mglearn &lt;-<span class="st"> </span><span class="kw">import</span>(<span class="st">&quot;mglearn&quot;</span>)
+forge &lt;-<span class="st"> </span>mglearn<span class="op">$</span>datasets<span class="op">$</span><span class="kw">make_forge</span>()
+forge <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>()
+<span class="kw">names</span>(forge)[<span class="dv">3</span>] &lt;-<span class="st"> &quot;y&quot;</span>
+<span class="kw">ggplot</span>(forge, <span class="kw">aes</span>(<span class="dt">x =</span> X1, <span class="dt">y =</span> X2, <span class="dt">color =</span> <span class="kw">factor</span>(y))) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">name =</span> <span class="st">&quot;クラス&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;第1特徴量&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;第2特徴量&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<p><img src="02_supervised_learning_01_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>次に回帰向けのデータセット<strong>wave</strong>を取得し、プロットする。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wave &lt;-<span class="st"> </span>mglearn<span class="op">$</span>datasets<span class="op">$</span><span class="kw">make_wave</span>(<span class="dt">n_samples =</span> 40L)
+wave <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>()
+<span class="kw">names</span>(wave) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;y&quot;</span>)
+<span class="kw">ggplot</span>(wave, <span class="kw">aes</span>(X, y)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;特徴量&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;出力&quot;</span>)</code></pre></div>
+<p><img src="02_supervised_learning_01_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="実世界のデータセット" class="section level4">
+<h4><span class="header-section-number">2.1.1.2</span> 実世界のデータセット</h4>
+<p><strong>breast cancer</strong>も<strong>boston housing</strong>も<strong>mlbench</strong>パッケージに含まれているが、<strong>breast cancer</strong>の方は<strong>sklearn</strong>に入っているものと若干異なる。<strong>breast cancer</strong>にはOriginalとDiagnosticの2種類あるらしい。<strong>sklearn</strong>に入っているのはDiagnosticで、<strong>mlbench</strong>のやつはOriginal。</p>
+<ul>
+<li><a href="https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(original)">UCI Machine Learning Repository: Breast Cancer Wisconsin (Original) Data Set</a></li>
+<li><a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)">UCI Machine Learning Repository: Breast Cancer Wisconsin (Diagnostic) Data Set</a></li>
+</ul>
+<p>Diagnosticの方は少し探したけどRの中には見つからなかったので(代わりにOriginalが<code>MASS::biopsy</code>にもあるのを見つけた)、<strong>sklearn</strong>から読み込んで細工しておく。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sklearn &lt;-<span class="st"> </span><span class="kw">import</span>(<span class="st">&quot;sklearn&quot;</span>)
+cancer =<span class="st"> </span>sklearn<span class="op">$</span>datasets<span class="op">$</span><span class="kw">load_breast_cancer</span>()
+cancer_data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(cancer<span class="op">$</span>data)  <span class="co"># データフレーム化</span>
+<span class="kw">names</span>(cancer_data) &lt;-<span class="st"> </span>cancer<span class="op">$</span>feature_names <span class="co"># 特徴量名取り込み</span>
+cancer_data<span class="op">$</span>Class &lt;-<span class="st"> </span>cancer<span class="op">$</span>target_names[cancer<span class="op">$</span>target<span class="op">+</span><span class="dv">1</span>] <span class="co"># クラス取り込み</span></code></pre></div>
+<ul>
+<li><strong>breast cancer</strong>は569のデータポイントと30の特徴量を持つ。</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(cancer_data) <span class="co"># クラスも含めているので列数は1多い</span>
+ ## [1] 569  31</code></pre></div>
+<p>各クラスの集計をする。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(cancer_data<span class="op">$</span>Class)
+ ## 
+ ##    benign malignant 
+ ##       357       212</code></pre></div>
+<p><strong>boston housing</strong>は<strong>mlbench</strong>パッケージ内のものと<strong>sklearn</strong>のものは同じなので、そのまま使用できる。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;BostonHousing&quot;</span>)
+<span class="kw">head</span>(BostonHousing)
+ ##      crim zn indus chas   nox    rm  age    dis rad tax ptratio      b
+ ## 1 0.00632 18  2.31    0 0.538 6.575 65.2 4.0900   1 296    15.3 396.90
+ ## 2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.90
+ ## 3 0.02729  0  7.07    0 0.469 7.185 61.1 4.9671   2 242    17.8 392.83
+ ## 4 0.03237  0  2.18    0 0.458 6.998 45.8 6.0622   3 222    18.7 394.63
+ ## 5 0.06905  0  2.18    0 0.458 7.147 54.2 6.0622   3 222    18.7 396.90
+ ## 6 0.02985  0  2.18    0 0.458 6.430 58.7 6.0622   3 222    18.7 394.12
+ ##   lstat medv
+ ## 1  4.98 24.0
+ ## 2  9.14 21.6
+ ## 3  4.03 34.7
+ ## 4  2.94 33.4
+ ## 5  5.33 36.2
+ ## 6  5.21 28.7</code></pre></div>
+<p>次に、特徴量同士の積を重複ありで選択して拡張する、という作業が出て来る。書籍の方ではmglearnの影に隠れてしまっているが、これは<code>sklearn.preprocessing.PolynomialFeatures</code>という関数の機能によっている。</p>
+<p>これに近いことは、<strong>mlrCPO</strong>パッケージの<code>cpoModelMatrix</code>関数を使うと実行できる。<strong>mlrCPO</strong>パッケージはまだCRANには無いので、<code>devtools::install_github(&quot;mlr-org/mlrCPO&quot;)</code>のようにgithubからインストールする必要がある。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">boston_task &lt;-<span class="st"> </span><span class="kw">makeRegrTask</span>(<span class="dt">data =</span> BostonHousing, <span class="dt">target =</span> <span class="st">&quot;medv&quot;</span>)
+boston_task_ex &lt;-<span class="st"> </span>boston_task <span class="op">%&gt;&gt;%</span><span class="st"> </span><span class="kw">cpoModelMatrix</span>(<span class="op">~</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>.<span class="op">^</span><span class="dv">2</span>)
+boston_task_ex
+ ## Supervised task: BostonHousing
+ ## Type: regr
+ ## Target: medv
+ ## Observations: 506
+ ## Features:
+ ##    numerics     factors     ordered functionals 
+ ##          92           0           0           0 
+ ## Missings: FALSE
+ ## Has weights: FALSE
+ ## Has blocking: FALSE
+ ## Has coordinates: FALSE
+<span class="kw">getTaskFeatureNames</span>(boston_task_ex)
+ ##  [1] &quot;crim&quot;          &quot;zn&quot;            &quot;indus&quot;         &quot;chas0&quot;        
+ ##  [5] &quot;chas1&quot;         &quot;nox&quot;           &quot;rm&quot;            &quot;age&quot;          
+ ##  [9] &quot;dis&quot;           &quot;rad&quot;           &quot;tax&quot;           &quot;ptratio&quot;      
+ ## [13] &quot;b&quot;             &quot;lstat&quot;         &quot;crim:zn&quot;       &quot;crim:indus&quot;   
+ ## [17] &quot;crim:chas1&quot;    &quot;crim:nox&quot;      &quot;crim:rm&quot;       &quot;crim:age&quot;     
+ ## [21] &quot;crim:dis&quot;      &quot;crim:rad&quot;      &quot;crim:tax&quot;      &quot;crim:ptratio&quot; 
+ ## [25] &quot;crim:b&quot;        &quot;crim:lstat&quot;    &quot;zn:indus&quot;      &quot;zn:chas1&quot;     
+ ## [29] &quot;zn:nox&quot;        &quot;zn:rm&quot;         &quot;zn:age&quot;        &quot;zn:dis&quot;       
+ ## [33] &quot;zn:rad&quot;        &quot;zn:tax&quot;        &quot;zn:ptratio&quot;    &quot;zn:b&quot;         
+ ## [37] &quot;zn:lstat&quot;      &quot;indus:chas1&quot;   &quot;indus:nox&quot;     &quot;indus:rm&quot;     
+ ## [41] &quot;indus:age&quot;     &quot;indus:dis&quot;     &quot;indus:rad&quot;     &quot;indus:tax&quot;    
+ ## [45] &quot;indus:ptratio&quot; &quot;indus:b&quot;       &quot;indus:lstat&quot;   &quot;chas1:nox&quot;    
+ ## [49] &quot;chas1:rm&quot;      &quot;chas1:age&quot;     &quot;chas1:dis&quot;     &quot;chas1:rad&quot;    
+ ## [53] &quot;chas1:tax&quot;     &quot;chas1:ptratio&quot; &quot;chas1:b&quot;       &quot;chas1:lstat&quot;  
+ ## [57] &quot;nox:rm&quot;        &quot;nox:age&quot;       &quot;nox:dis&quot;       &quot;nox:rad&quot;      
+ ## [61] &quot;nox:tax&quot;       &quot;nox:ptratio&quot;   &quot;nox:b&quot;         &quot;nox:lstat&quot;    
+ ## [65] &quot;rm:age&quot;        &quot;rm:dis&quot;        &quot;rm:rad&quot;        &quot;rm:tax&quot;       
+ ## [69] &quot;rm:ptratio&quot;    &quot;rm:b&quot;          &quot;rm:lstat&quot;      &quot;age:dis&quot;      
+ ## [73] &quot;age:rad&quot;       &quot;age:tax&quot;       &quot;age:ptratio&quot;   &quot;age:b&quot;        
+ ## [77] &quot;age:lstat&quot;     &quot;dis:rad&quot;       &quot;dis:tax&quot;       &quot;dis:ptratio&quot;  
+ ## [81] &quot;dis:b&quot;         &quot;dis:lstat&quot;     &quot;rad:tax&quot;       &quot;rad:ptratio&quot;  
+ ## [85] &quot;rad:b&quot;         &quot;rad:lstat&quot;     &quot;tax:ptratio&quot;   &quot;tax:b&quot;        
+ ## [89] &quot;tax:lstat&quot;     &quot;ptratio:b&quot;     &quot;ptratio:lstat&quot; &quot;b:lstat&quot;</code></pre></div>
+<p>しかし作成された特徴量の数は92で、12足りない。特徴量自身の二乗項が入っていないためだ。もともとの特徴量は13あったので、不足分が1つ足らないような気がするが、これは因子型特徴量の<code>chac</code>がダミー変数化されて2つの特徴量に分かれているためだ。</p>
+<p>特徴量自身の二乗項は、<code>I()</code>を使って明示的に含めてやる必要がある。書籍の方に合わせるのであれば、少々面倒だが以下のようにやる。もっと上手いやり方があるかもしれない。</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BostonHousing2 &lt;-<span class="st"> </span>BostonHousing
+BostonHousing2<span class="op">$</span>chas <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()
+boston_task2 &lt;-<span class="st"> </span><span class="kw">makeRegrTask</span>(<span class="dt">data =</span> BostonHousing2, <span class="dt">target =</span> <span class="st">&quot;medv&quot;</span>)
+fml &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;I(&quot;</span>, <span class="kw">getTaskFeatureNames</span>(boston_task2), <span class="st">&quot;^2)&quot;</span>, <span class="dt">collapse =</span> <span class="st">&quot;+&quot;</span>)
+fml &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;~0+&quot;</span>, fml, <span class="st">&quot;+.^2&quot;</span>)
+boston_task_ex2 &lt;-<span class="st"> </span>boston_task2 <span class="op">%&gt;&gt;%</span><span class="st"> </span><span class="kw">cpoModelMatrix</span>(<span class="kw">as.formula</span>(fml))
+<span class="kw">getTaskFeatureNames</span>(boston_task_ex2)
+ ##   [1] &quot;I(crim^2)&quot;     &quot;I(zn^2)&quot;       &quot;I(indus^2)&quot;    &quot;I(chas^2)&quot;    
+ ##   [5] &quot;I(nox^2)&quot;      &quot;I(rm^2)&quot;       &quot;I(age^2)&quot;      &quot;I(dis^2)&quot;     
+ ##   [9] &quot;I(rad^2)&quot;      &quot;I(tax^2)&quot;      &quot;I(ptratio^2)&quot;  &quot;I(b^2)&quot;       
+ ##  [13] &quot;I(lstat^2)&quot;    &quot;crim&quot;          &quot;zn&quot;            &quot;indus&quot;        
+ ##  [17] &quot;chas&quot;          &quot;nox&quot;           &quot;rm&quot;            &quot;age&quot;          
+ ##  [21] &quot;dis&quot;           &quot;rad&quot;           &quot;tax&quot;           &quot;ptratio&quot;      
+ ##  [25] &quot;b&quot;             &quot;lstat&quot;         &quot;crim:zn&quot;       &quot;crim:indus&quot;   
+ ##  [29] &quot;crim:chas&quot;     &quot;crim:nox&quot;      &quot;crim:rm&quot;       &quot;crim:age&quot;     
+ ##  [33] &quot;crim:dis&quot;      &quot;crim:rad&quot;      &quot;crim:tax&quot;      &quot;crim:ptratio&quot; 
+ ##  [37] &quot;crim:b&quot;        &quot;crim:lstat&quot;    &quot;zn:indus&quot;      &quot;zn:chas&quot;      
+ ##  [41] &quot;zn:nox&quot;        &quot;zn:rm&quot;         &quot;zn:age&quot;        &quot;zn:dis&quot;       
+ ##  [45] &quot;zn:rad&quot;        &quot;zn:tax&quot;        &quot;zn:ptratio&quot;    &quot;zn:b&quot;         
+ ##  [49] &quot;zn:lstat&quot;      &quot;indus:chas&quot;    &quot;indus:nox&quot;     &quot;indus:rm&quot;     
+ ##  [53] &quot;indus:age&quot;     &quot;indus:dis&quot;     &quot;indus:rad&quot;     &quot;indus:tax&quot;    
+ ##  [57] &quot;indus:ptratio&quot; &quot;indus:b&quot;       &quot;indus:lstat&quot;   &quot;chas:nox&quot;     
+ ##  [61] &quot;chas:rm&quot;       &quot;chas:age&quot;      &quot;chas:dis&quot;      &quot;chas:rad&quot;     
+ ##  [65] &quot;chas:tax&quot;      &quot;chas:ptratio&quot;  &quot;chas:b&quot;        &quot;chas:lstat&quot;   
+ ##  [69] &quot;nox:rm&quot;        &quot;nox:age&quot;       &quot;nox:dis&quot;       &quot;nox:rad&quot;      
+ ##  [73] &quot;nox:tax&quot;       &quot;nox:ptratio&quot;   &quot;nox:b&quot;         &quot;nox:lstat&quot;    
+ ##  [77] &quot;rm:age&quot;        &quot;rm:dis&quot;        &quot;rm:rad&quot;        &quot;rm:tax&quot;       
+ ##  [81] &quot;rm:ptratio&quot;    &quot;rm:b&quot;          &quot;rm:lstat&quot;      &quot;age:dis&quot;      
+ ##  [85] &quot;age:rad&quot;       &quot;age:tax&quot;       &quot;age:ptratio&quot;   &quot;age:b&quot;        
+ ##  [89] &quot;age:lstat&quot;     &quot;dis:rad&quot;       &quot;dis:tax&quot;       &quot;dis:ptratio&quot;  
+ ##  [93] &quot;dis:b&quot;         &quot;dis:lstat&quot;     &quot;rad:tax&quot;       &quot;rad:ptratio&quot;  
+ ##  [97] &quot;rad:b&quot;         &quot;rad:lstat&quot;     &quot;tax:ptratio&quot;   &quot;tax:b&quot;        
+ ## [101] &quot;tax:lstat&quot;     &quot;ptratio:b&quot;     &quot;ptratio:lstat&quot; &quot;b:lstat&quot;</code></pre></div>
+
+</div>
+</div>
+</div>
+<!-- </div> -->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="2-教師あり学習-1.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/nozma/ml_with_python_with_r/edit/master/02_supervised_learning_01.Rmd",
+"text": "Edit"
+},
+"download": null,
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
